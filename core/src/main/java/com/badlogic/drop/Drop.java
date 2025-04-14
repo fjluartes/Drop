@@ -2,10 +2,13 @@ package com.badlogic.drop;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
@@ -22,6 +25,8 @@ public class Drop extends ApplicationAdapter {
     private Texture dropTexture;
     private Sound sound;
     private Music music;
+    private Sprite bucketSprite;
+    private Vector2 touchPos;
 
     @Override
     public void create() {
@@ -29,6 +34,8 @@ public class Drop extends ApplicationAdapter {
         viewport = new FitViewport(8, 5);
         backgroundTexture = new Texture("background.png");
         bucketTexture = new Texture("bucket.png");
+        bucketSprite = new Sprite(bucketTexture);
+        bucketSprite.setSize(1, 1);
     }
 
     @Override
@@ -44,11 +51,23 @@ public class Drop extends ApplicationAdapter {
     }
 
     private void input() {
+        float speed = 4f;
+        float delta = Gdx.graphics.getDeltaTime();
 
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            bucketSprite.translateX(speed * delta);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            bucketSprite.translateX(-speed * delta);
+        }
+
+        if (Gdx.input.isTouched()) {
+            // TODO: react to player touching the screen
+        }
     }
 
     private void logic() {
-
+        // TODO: game logic goes here
     }
 
     private void draw() {
@@ -61,7 +80,9 @@ public class Drop extends ApplicationAdapter {
         float worldHeight = viewport.getWorldHeight();
 
         spriteBatch.draw(backgroundTexture, 0, 0, worldWidth, worldHeight);
-        spriteBatch.draw(bucketTexture, 0, 0, 1, 1);
+        // spriteBatch.draw(bucketTexture, 0, 0, 1, 1);
+        bucketSprite.draw(spriteBatch);
+
         spriteBatch.end();
     }
 
