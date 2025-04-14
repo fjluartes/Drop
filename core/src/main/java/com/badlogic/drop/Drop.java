@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Input.Keys;
@@ -36,6 +37,7 @@ public class Drop extends ApplicationAdapter {
         bucketTexture = new Texture("bucket.png");
         bucketSprite = new Sprite(bucketTexture);
         bucketSprite.setSize(1, 1);
+        touchPos = new Vector2();
     }
 
     @Override
@@ -62,12 +64,20 @@ public class Drop extends ApplicationAdapter {
         }
 
         if (Gdx.input.isTouched()) {
-            // TODO: react to player touching the screen
+            // get where touch happened on screen
+            touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+            viewport.unproject(touchPos);
+            // horizontally center bucket from touchPos
+            bucketSprite.setCenterX(touchPos.x);
         }
     }
 
     private void logic() {
         // TODO: game logic goes here
+        float worldWidth = viewport.getWorldWidth();
+        float worldHeight = viewport.getWorldHeight();
+        // Clamp x values between 0 and worldWidth
+        bucketSprite.setX(MathUtils.clamp(bucketSprite.getX(), 0, worldWidth));
     }
 
     private void draw() {
