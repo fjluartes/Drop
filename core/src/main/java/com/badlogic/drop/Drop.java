@@ -24,7 +24,7 @@ public class Drop extends ApplicationAdapter {
     private Texture backgroundTexture;
     private Texture bucketTexture;
     private Texture dropTexture;
-    private Sound sound;
+    private Sound dropSound;
     private Music music;
     private Sprite bucketSprite;
     private Vector2 touchPos;
@@ -35,6 +35,10 @@ public class Drop extends ApplicationAdapter {
         viewport = new FitViewport(8, 5);
         backgroundTexture = new Texture("background.png");
         bucketTexture = new Texture("bucket.png");
+        dropTexture = new Texture("drop.png");
+        dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
+
         bucketSprite = new Sprite(bucketTexture);
         bucketSprite.setSize(1, 1);
         touchPos = new Vector2();
