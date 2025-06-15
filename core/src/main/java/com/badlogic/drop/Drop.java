@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
@@ -28,6 +29,8 @@ public class Drop extends ApplicationAdapter {
     private Music music;
     private Sprite bucketSprite;
     private Vector2 touchPos;
+    Array<Sprite> dropSprites;
+    float dropTimer;
 
     @Override
     public void create() {
@@ -42,6 +45,7 @@ public class Drop extends ApplicationAdapter {
         bucketSprite = new Sprite(bucketTexture);
         bucketSprite.setSize(1, 1);
         touchPos = new Vector2();
+        dropSprites = new Array<>();
     }
 
     @Override
@@ -77,11 +81,33 @@ public class Drop extends ApplicationAdapter {
     }
 
     private void logic() {
-        // TODO: game logic goes here
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
+        float bucketWidth = bucketSprite.getWidth();
+        float bucketHeight = bucketSprite.getHeight();
+
         // Clamp x values between 0 and worldWidth
-        bucketSprite.setX(MathUtils.clamp(bucketSprite.getX(), 0, worldWidth));
+        bucketSprite.setX(MathUtils.clamp(bucketSprite.getX(), 0, worldWidth - bucketWidth));
+
+        float delta = Gdx.graphics.getDeltaTime();
+
+        // loop through each drop
+        for (int i = dropSprites.size - 1; i >= 0; i--) {
+            Sprite dropSprite = dropSprites.get(i);
+            float dropWidth = dropSprite.getWidth();
+            float dropHeight = dropSprite.getHeight();
+
+            dropSprite.translateY(-2f * delta);
+
+            // if the top of the drop goes below bottom of view, remove it
+            if (dropSprite.getY() < -dropHeight) dropSprites.removeIndex(i);
+        }
+
+        dropTimer += delta; // adds current delta to timer
+        if (dropTimer > 1f) {
+            dropTimer = 0;
+            createDroplet();
+        }
     }
 
     private void draw() {
@@ -97,7 +123,27 @@ public class Drop extends ApplicationAdapter {
         // spriteBatch.draw(bucketTexture, 0, 0, 1, 1);
         bucketSprite.draw(spriteBatch);
 
+        // draw each sprite
+        for (Sprite dropSprite : dropSprites) {
+            dropSprite.draw(spriteBatch); // move the drop downward every frame
+        }
+
         spriteBatch.end();
+    }
+
+    private void createDroplet() {
+        // local variables
+        float dropWidth = 1;
+        float dropHeight = 1;
+        float worldWidth = viewport.getWorldWidth();
+        float worldHeight = viewport.getWorldHeight();
+
+        // create drop sprite
+        Sprite dropSprite = new Sprite(dropTexture);
+        dropSprite.setSize(dropWidth, dropHeight);
+        dropSprite.setX(MathUtils.random(0f, worldWidth - dropWidth)); // randomzie  drop X position
+        dropSprite.setY(worldHeight);
+        dropSprites.add(dropSprite);
     }
 
     @Override
