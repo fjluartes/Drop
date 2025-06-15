@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -31,6 +32,8 @@ public class Drop extends ApplicationAdapter {
     private Vector2 touchPos;
     Array<Sprite> dropSprites;
     float dropTimer;
+    Rectangle bucketRectangle;
+    Rectangle dropRectangle;
 
     @Override
     public void create() {
@@ -46,6 +49,8 @@ public class Drop extends ApplicationAdapter {
         bucketSprite.setSize(1, 1);
         touchPos = new Vector2();
         dropSprites = new Array<>();
+        bucketRectangle = new Rectangle();
+        dropRectangle = new Rectangle();
     }
 
     @Override
