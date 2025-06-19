@@ -95,6 +95,7 @@ public class Drop extends ApplicationAdapter {
         bucketSprite.setX(MathUtils.clamp(bucketSprite.getX(), 0, worldWidth - bucketWidth));
 
         float delta = Gdx.graphics.getDeltaTime();
+        bucketRectangle.set(bucketSprite.getX(), bucketSprite.getY(), bucketWidth, bucketHeight);
 
         // loop through each drop
         for (int i = dropSprites.size - 1; i >= 0; i--) {
@@ -103,9 +104,14 @@ public class Drop extends ApplicationAdapter {
             float dropHeight = dropSprite.getHeight();
 
             dropSprite.translateY(-2f * delta);
+            // Apply drop position and size to dropRectangle
+            dropRectangle.set(dropSprite.getX(), dropSprite.getY(), dropWidth, dropHeight);
 
             // if the top of the drop goes below bottom of view, remove it
             if (dropSprite.getY() < -dropHeight) dropSprites.removeIndex(i);
+            else if (bucketRectangle.overlaps(dropRectangle)) { // check if bucket collides with drop
+                dropSprites.removeIndex(i); // remove the drop
+            }
         }
 
         dropTimer += delta; // adds current delta to timer
